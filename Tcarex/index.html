@@ -1,0 +1,987 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1d5ed8">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.svg" type="image/svg+xml">
+    <title>Healthcare Landing</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+        :root {
+            --primary:#1d5ed8;
+            --primary-deep:#1448b2;
+            --navy:#1f2533;
+            --text:#2d3445;
+            --muted:#5f6677;
+            --light:#f4f7ff;
+            --card:#ffffff;
+            --accent:#12b7a5;
+            --danger:#cf1f37;
+            --danger-deep:#9d1225;
+        }
+        * { box-sizing:border-box; }
+        body {
+            margin:0;
+            font-family:'Outfit',sans-serif;
+            background:
+                radial-gradient(circle at 0% 0%, #ffffff 0, #eef3ff 30%, transparent 55%),
+                radial-gradient(circle at 95% 15%, #e9fffb 0, transparent 36%),
+                linear-gradient(180deg,#f8f9fc 0,#ecf1ff 100%);
+            color:var(--navy);
+            overflow-x:hidden;
+        }
+        .priority-section {
+            margin:20px auto 0;
+            max-width:1220px;
+            padding:0 20px 20px;
+        }
+        .priority-inner {
+            margin:0 auto;
+            border-radius:16px;
+            background:linear-gradient(140deg,#163a91,#0f6d7b);
+            color:#fff;
+            box-shadow:0 18px 30px rgba(7,25,72,.28);
+            overflow:hidden;
+        }
+        .priority-content { padding:8px 14px 14px; }
+        .priority-head {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            margin-bottom:10px;
+        }
+        .priority-head h2 { margin:0; font-size:24px; }
+        .priority-note {
+            margin:0;
+            font-size:13px;
+            background:rgba(255,255,255,.14);
+            border:1px solid rgba(255,255,255,.25);
+            padding:5px 9px;
+            border-radius:999px;
+            white-space:nowrap;
+        }
+        .priority-grid {
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:10px;
+        }
+        .priority-card {
+            background:rgba(255,255,255,.13);
+            border:1px solid rgba(255,255,255,.24);
+            border-radius:12px;
+            padding:11px;
+        }
+        .priority-card h4 { margin:0 0 2px; font-size:18px; }
+        .priority-card p { margin:0; font-size:13px; color:#dce7ff; }
+        .priority-mini {
+            margin:6px 0 4px;
+            font-size:12px;
+            color:#b8d4ff;
+            font-weight:600;
+            letter-spacing:.2px;
+        }
+        .priority-chip {
+            display:inline-block;
+            margin-top:7px;
+            padding:4px 8px;
+            border-radius:8px;
+            background:#d8fff0;
+            color:#0b6d49;
+            font-size:12px;
+            font-weight:700;
+        }
+        .top-nav { height:86px; background:#fff; display:flex; align-items:center; gap:14px; padding:0 22px; border-bottom:1px solid #e5e7ef; }
+        .logo { display:flex; align-items:center; gap:10px; font-weight:800; font-size:28px; color:#1f5fdb; }
+        .logo-icon { width:34px; height:34px; position:relative; transform:rotate(-45deg); border-radius:8px 0 0 0; background:linear-gradient(180deg,#2f8dff 0%,#1567e8 100%); }
+        .logo-icon::before, .logo-icon::after { content:""; position:absolute; background:linear-gradient(180deg,#2f8dff 0%,#1567e8 100%); border-radius:50%; }
+        .logo-icon::before { width:34px; height:34px; top:-17px; left:0; }
+        .logo-icon::after { width:34px; height:34px; top:0; left:17px; }
+        .pulse { position:absolute; width:28px; height:14px; left:4px; top:10px; transform:rotate(45deg); z-index:2; }
+        .pulse::before { content:""; position:absolute; inset:0; background:#fff; clip-path:polygon(0 60%, 18% 60%, 30% 20%, 45% 88%, 58% 45%, 70% 60%, 100% 60%, 100% 75%, 62% 75%, 47% 100%, 30% 42%, 20% 75%, 0 75%); }
+        .logo-text { font-size:30px; line-height:1; letter-spacing:.2px; background:linear-gradient(180deg,#2f8dff 0%,#1567e8 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .emergency-nav-btn {
+            height:54px;
+            min-width:180px;
+            border:none;
+            border-radius:11px;
+            background:linear-gradient(135deg,var(--danger),var(--danger-deep));
+            color:#fff;
+            font:700 17px/1 'Outfit',sans-serif;
+            letter-spacing:.2px;
+            box-shadow:0 10px 16px rgba(157,18,37,.22);
+            cursor:pointer;
+        }
+        .course-btn { height:52px; min-width:160px; border:1px solid #bfc3d7; border-radius:8px; background:#fff; font:600 18px/1 'Outfit',sans-serif; padding:0 16px; color:#32539d; display:flex; align-items:center; justify-content:space-between; }
+        .services-wrap { position:relative; }
+        .services-menu {
+            position:absolute;
+            top:58px;
+            left:0;
+            width:220px;
+            background:#fff;
+            border:1px solid #d8e2fb;
+            border-radius:12px;
+            box-shadow:0 14px 24px rgba(24,49,106,.16);
+            padding:8px;
+            display:none;
+            z-index:260;
+        }
+        .services-menu.active { display:grid; gap:4px; }
+        .service-item {
+            border:none;
+            background:#f7faff;
+            color:#21458e;
+            border-radius:8px;
+            padding:10px;
+            text-align:left;
+            font:600 14px/1.2 'Outfit',sans-serif;
+            cursor:pointer;
+        }
+        .service-item:hover { background:#eaf1ff; }
+        .top-nav nav { display:flex; gap:22px; flex:1; justify-content:center; }
+        .top-nav nav a { text-decoration:none; color:#1d2230; font-weight:500; font-size:16px; white-space:nowrap; }
+        .top-nav nav a.active-link { color:#0f53cb; font-weight:700; }
+        .login-btn { border:none; background:linear-gradient(135deg, var(--primary), var(--primary-deep)); color:#fff; border-radius:8px; height:54px; padding:0 24px; font-weight:600; font-size:16px; cursor: pointer; }
+        .hero-wrap { max-width:1220px; margin:0 auto; padding:10px 20px 52px; }
+        .quick-content {
+            margin:0 0 14px;
+            padding:14px 16px;
+            border-radius:14px;
+            background:#ffffffcc;
+            border:1px solid #dbe5ff;
+            box-shadow:0 10px 20px rgba(25,51,109,.08);
+        }
+        .quick-content h3 {
+            margin:0 0 4px;
+            color:#163c92;
+            font-size:22px;
+        }
+        .quick-content p {
+            margin:0;
+            color:#415272;
+            font-size:15px;
+        }
+        .quick-bullets {
+            margin:10px 0 0;
+            padding-left:18px;
+            color:#253859;
+            font-size:14px;
+            display:grid;
+            gap:4px;
+        }
+        .quick-content.animate-swap h3,
+        .quick-content.animate-swap p,
+        .quick-content.animate-swap .quick-bullets {
+            animation:quickSwap .2s ease;
+        }
+        @keyframes quickSwap {
+            from { opacity:0; transform:translateY(4px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .quick-content.animate-swap h3,
+            .quick-content.animate-swap p,
+            .quick-content.animate-swap .quick-bullets {
+                animation:none;
+            }
+        }
+        .dots { display:flex; justify-content:center; gap:10px; margin:8px 0 14px; }
+        .dot { width:8px; height:8px; border-radius:50%; background:#d1d4de; cursor: pointer; }
+        .dot.active { background:#101217; }
+        .hero {
+            min-height:500px;
+            padding:56px 48px;
+            border-radius:18px;
+            background:linear-gradient(100deg,#edf2ff 0%,#ddf6ff 52%,#d9ffef 100%);
+            display:grid;
+            grid-template-columns:1.1fr 1fr;
+            gap:20px;
+            box-shadow:0 24px 40px rgba(22,53,120,.08);
+        }
+        .left h1 { margin:0; font-size:56px; line-height:1.15; font-weight:700; letter-spacing:-1px; }
+        .left h1 span { color:var(--primary); }
+        .left p { margin:18px 0 30px; font-size:16px; max-width:800px; color:#3f4655; }
+        .cta { height:68px; min-width:300px; border:none; border-radius:10px; background:linear-gradient(135deg, var(--primary), var(--primary-deep)); color:#fff; font-size:30px; font-weight:700; cursor: pointer; }
+        .right { position:relative; min-height:360px; }
+        .ring { position:absolute; border:2px dashed #c7cce2; border-radius:50%; display:grid; place-items:center; }
+        .ring-one { width:280px; height:280px; left:20px; bottom:30px; }
+        .ring-two { width:300px; height:300px; right:10px; top:6px; }
+        .person { width:180px; height:180px; border-radius:50%; overflow:hidden; background:#e9edf5; box-shadow:0 8px 20px rgba(0,0,0,.12); }
+        .person-img { width:100%; height:100%; object-fit:cover; display:block; }
+        .bubble { position:absolute; padding:14px 18px; border-radius:12px; font-size:18px; max-width:430px; line-height:1.3; box-shadow:0 10px 16px rgba(0,0,0,.07); z-index: 5; }
+        .bubble-dark { background:#1352c9; color:#fff; left:170px; bottom:66px; }
+        .stats { margin:-38px auto 0; background:#fff; border-radius:10px; box-shadow:0 12px 22px rgba(40,49,76,.1); display:grid; grid-template-columns:repeat(4,1fr); padding:24px 8px; }
+        .stats article { text-align:center; padding:0 14px; border-right:1px solid #ececf1; }
+        .stats article:last-child { border-right:none; }
+        .icon { font-size:14px; font-weight:700; color:#e03d5a; letter-spacing:.7px; }
+        .stats h3 { margin:12px 0 6px; font-size:32px; font-weight:700; }
+        .stats p { margin:0; color:var(--muted); font-size:20px; }
+
+        .chatbot-fab {
+            position:fixed;
+            right:28px;
+            bottom:24px;
+            min-width:136px;
+            height:62px;
+            border:none;
+            border-radius:34px;
+            background:linear-gradient(135deg,#0a5cc8 0%,#1dbf9b 100%);
+            color:#fff;
+            font-size:18px;
+            font-weight:700;
+            box-shadow:0 16px 28px rgba(7,61,153,.35);
+            cursor:pointer;
+            z-index:200;
+            transition:transform .2s ease;
+        }
+        .chatbot-fab:hover { transform:translateY(-2px); }
+
+        .chat-panel {
+            position:fixed;
+            right:28px;
+            bottom:96px;
+            width:400px;
+            max-height:80vh;
+            border-radius:20px;
+            background:rgba(255,255,255,.92);
+            backdrop-filter:blur(8px);
+            box-shadow:0 18px 40px rgba(16,38,90,.26);
+            border:1px solid #dce6ff;
+            overflow:hidden;
+            display:none;
+            z-index:220;
+            transform:translateY(8px);
+            opacity:0;
+            transition:all .25s ease;
+        }
+        .chat-panel.active { display:flex; flex-direction:column; transform:translateY(0); opacity:1; }
+        .chat-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:12px 14px;
+            background:linear-gradient(100deg,#1548aa,#0aa184);
+            color:#fff;
+        }
+        .chat-header h3 { margin:0; font-size:16px; }
+        .chat-close { border:none; background:#ffffff22; color:#fff; width:30px; height:30px; border-radius:8px; font-size:16px; cursor:pointer; }
+        .chat-body { padding:14px; overflow:auto; display:flex; flex-direction:column; gap:12px; }
+        .msg { padding:10px 12px; border-radius:12px; font-size:14px; line-height:1.4; max-width:94%; }
+        .msg.user { align-self:flex-end; background:#1152c8; color:#fff; border-bottom-right-radius:4px; }
+        .msg.bot { align-self:flex-start; background:#eef4ff; color:#1d2840; border-bottom-left-radius:4px; }
+
+        .chip-wrap { display:flex; gap:8px; flex-wrap:wrap; }
+        .chip {
+            border:1px solid #bfd0fb;
+            background:#f5f9ff;
+            color:#1647a8;
+            padding:7px 10px;
+            border-radius:999px;
+            font-size:12px;
+            cursor:pointer;
+        }
+
+        .doctor-list { display:grid; gap:10px; margin-top:6px; }
+        .doctor-card {
+            background:#fff;
+            border:1px solid #d7e3ff;
+            border-radius:12px;
+            padding:12px;
+            box-shadow:0 6px 14px rgba(34,83,173,.08);
+            display:grid;
+            gap:8px;
+        }
+        .doctor-row { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+        .doctor-name { margin:0; font-size:16px; color:#132e66; }
+        .doctor-meta { margin:0; font-size:13px; color:#4d5870; }
+        .rating-badge {
+            background:#ecfff6;
+            border:1px solid #bde8d4;
+            color:#0d7d59;
+            border-radius:8px;
+            font-weight:700;
+            font-size:12px;
+            padding:4px 8px;
+            white-space:nowrap;
+        }
+        .doctor-action {
+            border:none;
+            background:linear-gradient(135deg, #1d5ed8, #103f96);
+            color:#fff;
+            border-radius:9px;
+            font-weight:600;
+            padding:8px 10px;
+            cursor:pointer;
+            font-size:12px;
+        }
+        .route-action {
+            border:none;
+            background:linear-gradient(135deg, #0f8f71, #0b5e4a);
+            color:#fff;
+            border-radius:9px;
+            font-weight:600;
+            padding:8px 10px;
+            cursor:pointer;
+            font-size:12px;
+        }
+
+        .chat-controls {
+            display:grid;
+            grid-template-columns:1fr auto auto;
+            gap:8px;
+            padding:12px;
+            border-top:1px solid #e4ebff;
+            background:#fbfdff;
+        }
+        .chat-controls input {
+            border:1px solid #c9d7ff;
+            border-radius:10px;
+            padding:10px;
+            font:500 14px/1.2 'Outfit',sans-serif;
+            width:100%;
+        }
+        .chat-send,
+        .chat-mic {
+            border:none;
+            border-radius:10px;
+            color:#fff;
+            font-weight:700;
+            cursor:pointer;
+            height:42px;
+            padding:0 14px;
+        }
+        .chat-send { background:linear-gradient(135deg, #1d5ed8, #0ca187); }
+        .chat-mic { background:linear-gradient(135deg, #ca2b43, #921428); }
+        .chat-mic.listening { animation:pulseMic 1s infinite; }
+        @keyframes pulseMic {
+            0% { box-shadow:0 0 0 0 rgba(202,43,67,.45); }
+            70% { box-shadow:0 0 0 10px rgba(202,43,67,0); }
+            100% { box-shadow:0 0 0 0 rgba(202,43,67,0); }
+        }
+
+        .chat-lang {
+            border-top:1px solid #e4ebff;
+            padding:8px 12px;
+            background:#f6f9ff;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+        }
+        .chat-lang label { font-size:12px; color:#27427e; font-weight:600; }
+        .chat-lang select { border:1px solid #bfcdf3; border-radius:8px; padding:6px; font-family:'Outfit',sans-serif; }
+
+        .doctor-modal {
+            position:fixed;
+            inset:0;
+            background:rgba(11,26,56,.58);
+            z-index:300;
+            display:none;
+            place-items:center;
+            padding:20px;
+        }
+        .doctor-modal.active { display:grid; }
+        .doctor-panel {
+            width:min(520px, 96vw);
+            background:#fff;
+            border-radius:16px;
+            padding:24px;
+            box-shadow:0 20px 44px rgba(5,14,34,.4);
+        }
+        .doctor-panel h3 { margin:0 0 4px; color:#173f95; font-size:30px; }
+        .doctor-panel p { margin:0 0 12px; color:#42506a; }
+        .detail-grid {
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:10px;
+            margin:14px 0 20px;
+        }
+        .detail {
+            background:#f5f8ff;
+            border:1px solid #dbe7ff;
+            border-radius:10px;
+            padding:12px;
+        }
+        .detail strong { display:block; font-size:12px; color:#4c5f86; margin-bottom:5px; }
+        .detail span { font-size:18px; font-weight:700; color:#1e2e4a; }
+        .modal-actions { display:flex; gap:10px; }
+        .btn-main, .btn-sub {
+            flex:1;
+            border:none;
+            border-radius:10px;
+            padding:11px;
+            font-weight:700;
+            cursor:pointer;
+        }
+        .btn-main { background:linear-gradient(135deg,#1d5ed8,#0ca187); color:#fff; }
+        .btn-sub { background:#ebf0ff; color:#23438c; }
+
+        @media (max-width: 1150px) {
+            .top-nav nav { display:none; }
+        }
+        @media (max-width: 980px) {
+            .hero { grid-template-columns:1fr; }
+            .stats { grid-template-columns:1fr 1fr; gap:6px; }
+            .services-wrap { display:none; }
+            .priority-grid { grid-template-columns:1fr 1fr; }
+        }
+        @media (max-width: 720px) {
+            .top-nav { padding:0 10px; gap:8px; }
+            .logo-text { font-size:22px; }
+            .emergency-nav-btn { min-width:130px; font-size:14px; height:46px; }
+            .login-btn { height:46px; padding:0 12px; font-size:13px; }
+            .hero { padding:30px 20px; }
+            .left h1 { font-size:36px; }
+            .bubble-dark { left:10px; bottom:18px; max-width:260px; font-size:16px; }
+            .chat-panel {
+                right:10px;
+                left:10px;
+                width:auto;
+                bottom:86px;
+            }
+            .chatbot-fab { right:10px; }
+            .priority-grid { grid-template-columns:1fr; }
+            .priority-head { flex-direction:column; align-items:flex-start; }
+            .detail-grid { grid-template-columns:1fr; }
+            .chat-controls { grid-template-columns:1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="logo">
+            <span class="logo-icon"><span class="pulse"></span></span>
+            <span class="logo-text">Tcarex</span>
+        </div>
+        <button class="emergency-nav-btn" onclick="window.location.href='emergency.html'">Emergency SOS</button>
+        <nav>
+            <a href="#" class="nav-topic active-link" data-topic="hospitals">Hospitals</a>
+            <a href="#" class="nav-topic" data-topic="lab-tests">Lab Tests</a>
+            <a href="#" class="nav-topic" data-topic="first-aid">First Aid</a>
+            <a href="#" class="nav-topic" data-topic="wellness">Wellness</a>
+        </nav>
+        <button class="login-btn" onclick="window.location.href='portal.html?mode=doctor'">Login/Register</button>
+    </header>
+
+    <main class="hero-wrap">
+        <section class="quick-content" id="quickContent">
+            <h3 id="quickTitle">Hospitals</h3>
+            <p id="quickDesc">Find nearby multispecialty hospitals with emergency, ICU, and specialist support.</p>
+            <ul class="quick-bullets" id="quickBullets"></ul>
+        </section>
+        <div class="dots" id="dots"></div>
+        <section class="hero">
+            <div class="left">
+                <h1>India's <span>Trusted & Affordable</span><br>Healthcare Platform</h1>
+                <p id="heroText">Book appointments, online consultations, and preventive care all in one place.</p>
+                <button class="cta" onclick="window.location.href='portal.html?mode=patient'">Get Started</button>
+            </div>
+            <div class="right">
+                <div class="ring ring-one"><div class="person"><img class="person-img" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=80"></div></div>
+                <div class="ring ring-two"><div class="person"><img class="person-img" src="https://img.freepik.com/free-photo/physician-medic-examining-sick-woman-patient-pharmaceutical-appointment-hospital-ward_482257-2212.jpg?w=740&q=80"></div></div>
+                <div class="bubble bubble-dark" id="heroBubble">Healthcare should be simple, trusted, and affordable for everyone.</div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <article><div class="icon">LIVE</div><h3>Daily Live</h3><p>Interactive consultations</p></article>
+            <article><div class="icon">TEST</div><h3>10 Million +</h3><p>Tests, reports and notes</p></article>
+            <article><div class="icon">HELP</div><h3>24 x 7</h3><p>Doubt and support sessions</p></article>
+            <article><div class="icon">CARE</div><h3>1K+</h3><p>Healthcare centres</p></article>
+        </section>
+    </main>
+    <section class="priority-section">
+        <div class="priority-inner">
+            <div class="priority-content">
+                <div class="priority-head">
+                    <h2>Top Priority Doctors</h2>
+                    <p class="priority-note">Pulled from highest rated specialists</p>
+                </div>
+                <div class="priority-grid" id="priorityGrid"></div>
+            </div>
+        </div>
+    </section>
+
+    <button class="chatbot-fab" id="chatFab">Chatbot</button>
+
+    <section class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <h3>Tcarex Symptom Chatbot</h3>
+            <button class="chat-close" id="chatClose">x</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="msg bot">Tell me your symptoms by text or mic. I recommend nearby doctors sorted by rating.</div>
+            <div class="chip-wrap">
+                <button class="chip" data-chip="chest pain">Chest pain</button>
+                <button class="chip" data-chip="skin rash">Skin rash</button>
+                <button class="chip" data-chip="joint pain">Joint pain</button>
+                <button class="chip" data-chip="headache">Headache</button>
+            </div>
+            <div class="doctor-list" id="doctorList"></div>
+        </div>
+        <div class="chat-lang">
+            <label for="langSelect">Voice Language:</label>
+            <select id="langSelect">
+                <option value="en-IN">English (India)</option>
+                <option value="hi-IN">Hindi</option>
+                <option value="bn-IN">Bengali</option>
+                <option value="ta-IN">Tamil</option>
+                <option value="te-IN">Telugu</option>
+                <option value="mr-IN">Marathi</option>
+                <option value="gu-IN">Gujarati</option>
+                <option value="kn-IN">Kannada</option>
+                <option value="ml-IN">Malayalam</option>
+                <option value="pa-IN">Punjabi</option>
+                <option value="ur-IN">Urdu</option>
+            </select>
+        </div>
+        <div class="chat-controls">
+            <input id="chatInput" type="text" placeholder="Type symptoms like chest pain, skin rash, headache...">
+            <button class="chat-mic" id="chatMic" title="Speak symptoms">Mic</button>
+            <button class="chat-send" id="chatSend">Send</button>
+        </div>
+    </section>
+
+    <section class="doctor-modal" id="doctorModal">
+        <div class="doctor-panel">
+            <h3 id="modalName">Doctor Name</h3>
+            <p id="modalSpecialty">Specialty</p>
+            <div class="detail-grid">
+                <div class="detail"><strong>Rating</strong><span id="modalRating">0</span></div>
+                <div class="detail"><strong>Consultation Fee</strong><span id="modalFees">INR 0</span></div>
+                <div class="detail"><strong>Area</strong><span id="modalArea">-</span></div>
+                <div class="detail"><strong>Distance</strong><span id="modalDistance">0 km</span></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-main" onclick="window.location.href='portal.html?mode=patient'">Book Appointment</button>
+                <button class="btn-sub" id="closeDoctorModal">Close</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function resolveApiBase() {
+            const qs = new URLSearchParams(window.location.search);
+            const queryBase = (qs.get('apiBase') || '').trim();
+            if (queryBase) {
+                localStorage.setItem('careflow_api_base', queryBase);
+                return queryBase.replace(/\/$/, '');
+            }
+
+            const storedBase = (localStorage.getItem('careflow_api_base') || '').trim();
+            if (storedBase) return storedBase.replace(/\/$/, '');
+
+            const host = window.location.hostname;
+            if (!host || host === 'localhost' || host === '127.0.0.1') {
+                return 'http://127.0.0.1:5000';
+            }
+            return `${window.location.protocol}//${window.location.host}`;
+        }
+
+        const API_BASE = resolveApiBase();
+        const slides = [
+            { text: 'Book appointments, online consultations, and preventive care all in one place.', bubble: 'Healthcare should be simple, trusted, and affordable for everyone.' },
+            { text: 'Connect with top doctors, diagnostics, and pharmacy support 24 x 7.', bubble: 'From symptoms to treatment, we guide you at every step.' },
+            { text: 'Manage family health plans with seamless digital and in-clinic care.', bubble: 'One platform for daily wellness, emergencies, and long-term care.' }
+        ];
+        const fallbackDoctors = [
+            { name: 'Dr. Khanna', specialty: 'Pediatrician (Kids)', keywords: ['child', 'baby', 'kids'], rating: 4.9, total_reviews: 20, fees: 1000, area: 'Jayanagar', distance_km: 3.8 },
+            { name: 'Dr. Miller', specialty: 'Cardiologist (Heart)', keywords: ['heart', 'chest', 'cardio'], rating: 4.8, total_reviews: 5, fees: 900, area: 'Koramangala', distance_km: 2.1 },
+            { name: 'Dr. Sarah', specialty: 'Dermatologist (Skin)', keywords: ['skin', 'rash', 'acne'], rating: 4.7, total_reviews: 12, fees: 800, area: 'HSR Layout', distance_km: 4.4 },
+            { name: 'Dr. Smith', specialty: 'Neurologist (Brain)', keywords: ['brain', 'neuro', 'headache'], rating: 4.6, total_reviews: 15, fees: 1200, area: 'Whitefield', distance_km: 7.9 },
+            { name: 'Dr. Aris', specialty: 'Cardiologist (Heart)', keywords: ['heart', 'chest', 'cardio'], rating: 4.5, total_reviews: 10, fees: 700, area: 'Indiranagar', distance_km: 3.2 },
+            { name: 'Dr. Emma', specialty: 'Orthopedic (Bones)', keywords: ['bone', 'fracture', 'joint'], rating: 4.4, total_reviews: 7, fees: 750, area: 'Marathahalli', distance_km: 6.4 },
+            { name: 'Dr. Gupta', specialty: 'Dermatologist (Skin)', keywords: ['skin', 'rash', 'acne'], rating: 4.2, total_reviews: 8, fees: 600, area: 'BTM Layout', distance_km: 5.1 }
+        ];
+
+        const dotsWrap = document.getElementById('dots');
+        const heroText = document.getElementById('heroText');
+        const heroBubble = document.getElementById('heroBubble');
+        let current = 0;
+
+        slides.forEach((_, index) => {
+            const dot = document.createElement('span');
+            dot.className = 'dot';
+            dot.addEventListener('click', () => { current = index; renderHero(); });
+            dotsWrap.appendChild(dot);
+        });
+        const dots = Array.from(dotsWrap.querySelectorAll('.dot'));
+
+        function renderHero() {
+            const item = slides[current];
+            heroText.textContent = item.text;
+            if (heroBubble) heroBubble.textContent = item.bubble;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === current));
+        }
+
+        setInterval(() => {
+            current = (current + 1) % slides.length;
+            renderHero();
+        }, 3200);
+        renderHero();
+
+        const chatFab = document.getElementById('chatFab');
+        const chatPanel = document.getElementById('chatPanel');
+        const chatClose = document.getElementById('chatClose');
+        const chatSend = document.getElementById('chatSend');
+        const chatMic = document.getElementById('chatMic');
+        const chatInput = document.getElementById('chatInput');
+        const chatBody = document.getElementById('chatBody');
+        const doctorList = document.getElementById('doctorList');
+        const doctorModal = document.getElementById('doctorModal');
+        const closeDoctorModal = document.getElementById('closeDoctorModal');
+        const langSelect = document.getElementById('langSelect');
+        const priorityGrid = document.getElementById('priorityGrid');
+        const navTopics = Array.from(document.querySelectorAll('.nav-topic'));
+        const servicesBtn = document.getElementById('servicesBtn');
+        const servicesMenu = document.getElementById('servicesMenu');
+        const serviceItems = Array.from(document.querySelectorAll('.service-item'));
+        const quickContent = document.getElementById('quickContent');
+        const quickTitle = document.getElementById('quickTitle');
+        const quickDesc = document.getElementById('quickDesc');
+        const quickBullets = document.getElementById('quickBullets');
+        let userLocation = null;
+        let doctorsCache = fallbackDoctors.slice();
+        const topicContent = {
+            hospitals: {
+                title: 'Hospitals',
+                desc: 'Find nearby multispecialty hospitals with emergency, ICU, and specialist support.',
+                bullets: ['24x7 emergency and trauma centers', 'Filtered by distance and department availability', 'Book consultation slots with senior doctors']
+            },
+            'lab-tests': {
+                title: 'Lab Tests',
+                desc: 'Book diagnostic tests and receive digital reports quickly.',
+                bullets: ['Home sample collection for common tests', 'CBC, thyroid, sugar, lipid and advanced panels', 'Downloadable reports and doctor-ready summaries']
+            },
+            'first-aid': {
+                title: 'First Aid',
+                desc: 'Get immediate first-aid guidance before reaching a hospital.',
+                bullets: ['Step-by-step response for burns, cuts, fractures', 'Emergency helpline and nearest care center suggestions', 'Quick do and do-not actions for critical situations']
+            },
+            wellness: {
+                title: 'Wellness',
+                desc: 'Daily wellness plans for preventive healthcare and lifestyle management.',
+                bullets: ['Nutrition and activity recommendations', 'Sleep, stress and hydration tracking basics', 'Preventive screening reminders by age group']
+            }
+        };
+
+        chatFab.addEventListener('click', () => chatPanel.classList.toggle('active'));
+        chatClose.addEventListener('click', () => chatPanel.classList.remove('active'));
+        closeDoctorModal.addEventListener('click', () => doctorModal.classList.remove('active'));
+        doctorModal.addEventListener('click', (e) => {
+            if (e.target === doctorModal) doctorModal.classList.remove('active');
+        });
+        loadPriorityDoctors();
+
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const symptoms = chip.getAttribute('data-chip');
+                chatInput.value = symptoms;
+                findDoctors(symptoms);
+            });
+        });
+
+        chatSend.addEventListener('click', () => findDoctors(chatInput.value));
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') findDoctors(chatInput.value);
+        });
+        navTopics.forEach((link) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const key = link.getAttribute('data-topic') || 'hospitals';
+                renderTopicContent(key);
+                navTopics.forEach((item) => item.classList.toggle('active-link', item === link));
+            });
+        });
+        if (servicesBtn && servicesMenu) {
+            servicesBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                servicesMenu.classList.toggle('active');
+            });
+            serviceItems.forEach((item) => {
+                item.addEventListener('click', () => {
+                    const key = item.getAttribute('data-topic') || 'hospitals';
+                    renderTopicContent(key);
+                    const matchingNav = navTopics.find((n) => n.getAttribute('data-topic') === key);
+                    navTopics.forEach((n) => n.classList.toggle('active-link', n === matchingNav));
+                    servicesMenu.classList.remove('active');
+                    quickContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+            document.addEventListener('click', (e) => {
+                if (!servicesMenu.contains(e.target) && e.target !== servicesBtn) {
+                    servicesMenu.classList.remove('active');
+                }
+            });
+        }
+        renderTopicContent('hospitals');
+
+        function addMessage(text, role) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.textContent = text;
+            chatBody.insertBefore(div, doctorList);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        async function findDoctors(symptoms) {
+            const trimmed = (symptoms || '').trim();
+            if (!trimmed) return;
+            addMessage(trimmed, 'user');
+            doctorList.innerHTML = '';
+            chatInput.value = '';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/chatbot/recommend?symptoms=${encodeURIComponent(trimmed)}`);
+                if (!res.ok) throw new Error('Failed API response');
+                const data = await res.json();
+                const doctors = data.doctors || [];
+                if (doctors.length) doctorsCache = doctors.slice();
+
+                if (!doctors.length) {
+                    addMessage('No matching doctors found right now.', 'bot');
+                    return;
+                }
+
+                addMessage(`Found ${doctors.length} nearby doctors, sorted by rating.`, 'bot');
+                renderChatDoctors(doctors);
+            } catch (err) {
+                const doctors = getLocalRecommendations(trimmed);
+                if (!doctors.length) {
+                    addMessage('No matching doctors found right now.', 'bot');
+                    return;
+                }
+                addMessage(`Showing ${doctors.length} suggestions from local data.`, 'bot');
+                renderChatDoctors(doctors);
+            }
+        }
+
+        async function openDoctorDashboard(name) {
+            try {
+                const res = await fetch(`${API_BASE}/api/doctors/${encodeURIComponent(name)}`);
+                if (!res.ok) throw new Error('Doctor not found');
+                const doc = await res.json();
+
+                document.getElementById('modalName').textContent = doc.name;
+                document.getElementById('modalSpecialty').textContent = doc.specialty;
+                document.getElementById('modalRating').textContent = `${doc.rating} stars`;
+                document.getElementById('modalFees').textContent = `INR ${doc.fees}`;
+                document.getElementById('modalArea').textContent = doc.area || 'Nearby';
+                document.getElementById('modalDistance').textContent = `${doc.distance_km ?? '-'} km`;
+                doctorModal.classList.add('active');
+            } catch (err) {
+                const doc = doctorsCache.find((d) => (d.name || '').toLowerCase() === (name || '').toLowerCase());
+                if (doc) {
+                    document.getElementById('modalName').textContent = doc.name;
+                    document.getElementById('modalSpecialty').textContent = doc.specialty || '-';
+                    document.getElementById('modalRating').textContent = `${doc.rating ?? '-'} stars`;
+                    document.getElementById('modalFees').textContent = `INR ${doc.fees ?? '-'}`;
+                    document.getElementById('modalArea').textContent = doc.area || 'Nearby';
+                    document.getElementById('modalDistance').textContent = `${doc.distance_km ?? '-'} km`;
+                    doctorModal.classList.add('active');
+                    return;
+                }
+                addMessage('Could not load doctor dashboard. Please try again.', 'bot');
+            }
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isListening = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                isListening = true;
+                chatMic.classList.add('listening');
+                chatMic.textContent = 'Listening';
+                addMessage('Listening... speak your symptoms now.', 'bot');
+            };
+
+            recognition.onresult = (event) => {
+                const spoken = event.results[0][0].transcript;
+                chatInput.value = spoken;
+                addMessage(`Heard: ${spoken}`, 'bot');
+                findDoctors(spoken);
+            };
+
+            recognition.onerror = () => {
+                addMessage('Mic could not understand. Try again or type symptoms.', 'bot');
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                chatMic.classList.remove('listening');
+                chatMic.textContent = 'Mic';
+            };
+        }
+
+        chatMic.addEventListener('click', () => {
+            if (!recognition) {
+                addMessage('Voice input is not supported in this browser. Use Chrome/Edge and HTTPS for best results.', 'bot');
+                return;
+            }
+            if (isListening) {
+                recognition.stop();
+                return;
+            }
+            recognition.lang = langSelect.value || 'en-IN';
+            recognition.start();
+        });
+
+        function renderPriorityDoctors(doctors) {
+            priorityGrid.innerHTML = '';
+            if (!doctors.length) {
+                priorityGrid.innerHTML = '<article class="priority-card"><h4>No doctors available</h4><p>Please check server data.</p></article>';
+                return;
+            }
+
+            doctors.slice(0, 6).forEach((doc) => {
+                const rating = Number(doc.rating || 0).toFixed(1);
+                const area = doc.area || 'Nearby';
+                const specialty = doc.specialty || 'General Physician';
+                const distance = doc.distance_km ?? '-';
+                const reviews = doc.total_reviews ?? 0;
+                const card = document.createElement('article');
+                card.className = 'priority-card';
+                card.innerHTML = `
+                    <h4>${doc.name}</h4>
+                    <p>${specialty} | ${area}</p>
+                    <p class="priority-mini">${specialty} | ${rating} stars (${reviews} reviews)</p>
+                    <p>${distance} km away</p>
+                    <span class="priority-chip">${rating} stars</span>
+                `;
+                priorityGrid.appendChild(card);
+            });
+        }
+
+        async function loadPriorityDoctors() {
+            try {
+                const res = await fetch(`${API_BASE}/api/doctors`);
+                if (!res.ok) throw new Error('Failed to load doctors');
+                const doctors = await res.json();
+                const sorted = (doctors || [])
+                    .slice()
+                    .sort((a, b) => (b.rating || 0) - (a.rating || 0) || (a.distance_km || 999) - (b.distance_km || 999));
+                if (sorted.length) doctorsCache = sorted.slice();
+                renderPriorityDoctors(sorted);
+            } catch (err) {
+                renderPriorityDoctors(doctorsCache);
+            }
+        }
+
+        function getLocalRecommendations(symptoms) {
+            const query = (symptoms || '').toLowerCase();
+            const source = (doctorsCache && doctorsCache.length) ? doctorsCache : fallbackDoctors;
+            const matched = source.filter((doc) => {
+                const keywords = (doc.keywords || []).map((k) => String(k).toLowerCase());
+                return keywords.some((k) => query.includes(k));
+            });
+            const list = matched.length ? matched : source;
+            return list
+                .slice()
+                .sort((a, b) => (b.rating || 0) - (a.rating || 0) || (a.distance_km || 999) - (b.distance_km || 999))
+                .slice(0, 5);
+        }
+
+        function renderChatDoctors(doctors) {
+            doctorList.innerHTML = '';
+            doctors.slice(0, 5).forEach(doc => {
+                const card = document.createElement('div');
+                card.className = 'doctor-card';
+                card.innerHTML = `
+                    <div class="doctor-row">
+                        <h4 class="doctor-name">${doc.name}</h4>
+                        <span class="rating-badge">${doc.rating} stars</span>
+                    </div>
+                    <p class="doctor-meta">${doc.specialty}</p>
+                    <div class="doctor-row">
+                        <p class="doctor-meta">${doc.area || 'Nearby'} | ${doc.distance_km ?? '-'} km</p>
+                        <div>
+                            <button class="doctor-action" data-doctor="${doc.name}">View Dashboard</button>
+                            <button class="route-action" data-route-doctor="${doc.name}" data-route-area="${doc.area || ''}">Best Route</button>
+                        </div>
+                    </div>
+                `;
+                doctorList.appendChild(card);
+            });
+
+            doctorList.querySelectorAll('.doctor-action').forEach(btn => {
+                btn.addEventListener('click', () => openDoctorDashboard(btn.getAttribute('data-doctor')));
+            });
+            doctorList.querySelectorAll('.route-action').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const name = btn.getAttribute('data-route-doctor') || '';
+                    const area = btn.getAttribute('data-route-area') || '';
+                    openBestRoute(name, area);
+                });
+            });
+        }
+
+        function renderTopicContent(key) {
+            const data = topicContent[key] || topicContent.hospitals;
+            if (quickContent) {
+                quickContent.classList.remove('animate-swap');
+                void quickContent.offsetWidth;
+                quickContent.classList.add('animate-swap');
+            }
+            quickTitle.textContent = data.title;
+            quickDesc.textContent = data.desc;
+            quickBullets.innerHTML = '';
+            data.bullets.forEach((item) => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                quickBullets.appendChild(li);
+            });
+            if (quickContent) {
+                setTimeout(() => quickContent.classList.remove('animate-swap'), 220);
+            }
+        }
+
+        function openBestRoute(name, area) {
+            const destination = [name, area].filter(Boolean).join(', ');
+            const params = new URLSearchParams({
+                api: '1',
+                destination,
+                travelmode: 'driving',
+                dir_action: 'navigate'
+            });
+
+            if (userLocation && Number.isFinite(userLocation.lat) && Number.isFinite(userLocation.lng)) {
+                params.set('origin', `${userLocation.lat},${userLocation.lng}`);
+            }
+
+            window.open(`https://www.google.com/maps/dir/?${params.toString()}`, '_blank', 'noopener');
+        }
+
+        function initUserLocation() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    userLocation = {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    };
+                },
+                () => {},
+                { enableHighAccuracy: true, timeout: 7000, maximumAge: 120000 }
+            );
+        }
+
+        initUserLocation();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>

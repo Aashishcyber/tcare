@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#cd2138">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.svg" type="image/svg+xml">
+    <title>Tcarex Emergency Mode</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap');
+        :root {
+            --danger:#cd2138;
+            --danger-deep:#8a0f22;
+        }
+        * { box-sizing:border-box; }
+        body {
+            margin:0;
+            font-family:'Outfit',sans-serif;
+            color:#fff;
+            background:
+                radial-gradient(circle at 12% 20%, #ff6d80 0, transparent 35%),
+                radial-gradient(circle at 90% 12%, #ffb877 0, transparent 32%),
+                linear-gradient(145deg,#2d0c23,#430e2d 50%,#2c103f);
+            min-height:100vh;
+            padding:18px;
+        }
+        .wrap { max-width:1180px; margin:0 auto; }
+        .top {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            background:rgba(255,255,255,.08);
+            border:1px solid #ffffff2e;
+            border-radius:16px;
+            padding:12px 14px;
+            backdrop-filter:blur(7px);
+        }
+        .brand { font-size:28px; font-weight:800; letter-spacing:.4px; }
+        .hint { font-size:13px; color:#ffeef2; max-width:560px; }
+        .home-btn { border:none; background:#ffffff20; color:#fff; border-radius:10px; padding:10px 12px; font-weight:700; cursor:pointer; }
+        .grid {
+            margin-top:16px;
+            display:grid;
+            grid-template-columns:1.15fr .85fr;
+            gap:14px;
+        }
+        .panel {
+            background:rgba(255,255,255,.09);
+            border:1px solid #ffffff2e;
+            border-radius:18px;
+            padding:18px;
+            backdrop-filter:blur(6px);
+        }
+        .sos {
+            display:grid;
+            gap:12px;
+            place-items:center;
+            text-align:center;
+            min-height:270px;
+            background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07));
+        }
+        .sos h1 { margin:0; font-size:48px; line-height:1; }
+        .sos p { margin:0; color:#ffe6ec; }
+        .sos-btn {
+            width:min(420px,100%);
+            border:none;
+            border-radius:16px;
+            padding:22px 18px;
+            font-size:34px;
+            font-weight:800;
+            color:#fff;
+            background:linear-gradient(135deg,var(--danger),var(--danger-deep));
+            box-shadow:0 24px 34px rgba(117,5,29,.5);
+            cursor:pointer;
+            text-decoration:none;
+            display:inline-block;
+        }
+        .actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; }
+        .action {
+            border:none;
+            border-radius:12px;
+            padding:12px;
+            background:#ffffff1e;
+            color:#fff;
+            font-weight:700;
+            cursor:pointer;
+        }
+        .section-title { margin:0 0 10px; font-size:20px; }
+        .profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .profile-grid input {
+            width:100%;
+            border:1px solid #ffffff52;
+            border-radius:10px;
+            padding:10px;
+            background:#ffffff14;
+            color:#fff;
+            font-family:'Outfit',sans-serif;
+        }
+        .profile-grid input::placeholder { color:#f6d9de; }
+        .save-btn {
+            margin-top:10px;
+            border:none;
+            border-radius:10px;
+            background:linear-gradient(135deg,#1ea381,#0a6f55);
+            color:#fff;
+            font-weight:700;
+            padding:10px 12px;
+            cursor:pointer;
+            width:100%;
+        }
+        .small-note { font-size:12px; color:#ffe9ee; margin-top:8px; }
+        .incident-select {
+            width:100%;
+            border:1px solid #ffffff52;
+            border-radius:10px;
+            padding:10px;
+            background:#ffffff14;
+            color:#fff;
+            font-family:'Outfit',sans-serif;
+            margin-top:8px;
+        }
+        .incident-select option { color:#1f2230; }
+        .ers { display:grid; gap:10px; }
+        .er-card {
+            background:#ffffff16;
+            border:1px solid #ffffff2b;
+            border-radius:12px;
+            padding:12px;
+            display:grid;
+            gap:6px;
+        }
+        .er-row { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+        .er-name { margin:0; font-size:16px; font-weight:700; }
+        .er-meta { margin:0; font-size:13px; color:#ffdde4; }
+        .rate { background:#dafdec; color:#055236; padding:3px 8px; border-radius:8px; font-weight:700; font-size:12px; }
+        .call-link {
+            text-decoration:none;
+            display:inline-block;
+            margin-top:4px;
+            border-radius:8px;
+            padding:8px 10px;
+            background:linear-gradient(135deg,#1f7bd3,#1550a3);
+            color:#fff;
+            font-weight:700;
+            font-size:13px;
+        }
+        @media (max-width: 920px) {
+            .grid { grid-template-columns:1fr; }
+        }
+        @media (max-width: 600px) {
+            .brand { font-size:22px; }
+            .sos h1 { font-size:36px; }
+            .sos-btn { font-size:27px; }
+            .profile-grid { grid-template-columns:1fr; }
+            .actions { grid-template-columns:1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header class="top">
+            <div>
+                <div class="brand">Tcarex Emergency</div>
+                <div class="hint">Lock-screen ready flow: keep this page pinned. One tap for SOS, location, and nearest emergency centers.</div>
+            </div>
+            <button class="home-btn" onclick="window.location.href='index.html'">Back Home</button>
+        </header>
+        <main class="grid">
+            <section class="panel sos">
+                <h1>Emergency Mode</h1>
+                <p>If there is an accident, use this screen immediately.</p>
+                <select class="incident-select" id="incidentType">
+                    <option value="road accident">Road Accident</option>
+                    <option value="head injury">Head Injury</option>
+                    <option value="chest pain">Chest Pain</option>
+                    <option value="fracture injury">Fracture Injury</option>
+                    <option value="burn injury">Burn Injury</option>
+                    <option value="general emergency">General Emergency</option>
+                </select>
+                <button class="sos-btn" id="sosBtn">Call 108 Now</button>
+                <div class="actions">
+                    <button class="action" id="shareLocationBtn">Share Live Location</button>
+                    <button class="action" id="callContactBtn">Call Emergency Contact</button>
+                </div>
+                <div class="small-note" id="statusText">Status: Ready</div>
+            </section>
+            <section class="panel">
+                <h3 class="section-title">Emergency Profile</h3>
+                <div class="profile-grid">
+                    <input id="pName" placeholder="Full Name">
+                    <input id="pBlood" placeholder="Blood Group (e.g. B+)">
+                    <input id="pAllergy" placeholder="Major Allergies">
+                    <input id="pCondition" placeholder="Medical Condition">
+                    <input id="pContactName" placeholder="Emergency Contact Name">
+                    <input id="pContactPhone" placeholder="Emergency Contact Phone">
+                </div>
+                <button class="save-btn" id="saveProfileBtn">Save Emergency Profile</button>
+                <div class="small-note">Stored in this browser for quick lock-screen access.</div>
+            </section>
+            <section class="panel" style="grid-column:1 / -1;">
+                <h3 class="section-title">Nearby Emergency Centers (24x7)</h3>
+                <div class="ers" id="erList"></div>
+            </section>
+        </main>
+    </div>
+    <script>
+        function resolveApiBase() {
+            const qs = new URLSearchParams(window.location.search);
+            const queryBase = (qs.get('apiBase') || '').trim();
+            if (queryBase) {
+                localStorage.setItem('careflow_api_base', queryBase);
+                return queryBase.replace(/\/$/, '');
+            }
+
+            const storedBase = (localStorage.getItem('careflow_api_base') || '').trim();
+            if (storedBase) return storedBase.replace(/\/$/, '');
+
+            const host = window.location.hostname;
+            if (!host || host === 'localhost' || host === '127.0.0.1') {
+                return 'http://127.0.0.1:5000';
+            }
+            return `${window.location.protocol}//${window.location.host}`;
+        }
+
+        const API_BASE = resolveApiBase();
+        const statusText = document.getElementById('statusText');
+        const fields = ['pName', 'pBlood', 'pAllergy', 'pCondition', 'pContactName', 'pContactPhone'];
+
+        function setStatus(msg) {
+            statusText.textContent = `Status: ${msg}`;
+        }
+
+        function loadProfile() {
+            const saved = JSON.parse(localStorage.getItem('careflow_emergency_profile') || '{}');
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                el.value = saved[id] || '';
+            });
+        }
+
+        function saveProfile() {
+            const payload = {};
+            fields.forEach(id => payload[id] = document.getElementById(id).value.trim());
+            localStorage.setItem('careflow_emergency_profile', JSON.stringify(payload));
+            setStatus('Emergency profile saved');
+        }
+
+        async function loadCenters() {
+            const erList = document.getElementById('erList');
+            erList.innerHTML = '<div class="er-meta">Loading emergency centers...</div>';
+            try {
+                const res = await fetch(`${API_BASE}/api/emergency/nearby?limit=6`);
+                const data = await res.json();
+                setStatus(`Emergency helpline: ${data.number || '108'} | Ready`);
+                const centers = data.centers || [];
+                if (!centers.length) {
+                    erList.innerHTML = '<div class="er-meta">No emergency centers found.</div>';
+                    return;
+                }
+                erList.innerHTML = '';
+                centers.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = 'er-card';
+                    div.innerHTML = `
+                        <div class="er-row">
+                            <p class="er-name">${c.name}</p>
+                            <span class="rate">${c.rating} stars</span>
+                        </div>
+                        <p class="er-meta">${c.type} | ${c.area} | ${c.distance_km} km | ${c.open}</p>
+                        <a class="call-link" href="tel:${c.phone}">Call Center</a>
+                    `;
+                    erList.appendChild(div);
+                });
+            } catch {
+                erList.innerHTML = '<div class="er-meta">Could not load centers. Keep Flask server running.</div>';
+            }
+        }
+
+        function shareLocation() {
+            if (!navigator.geolocation) {
+                setStatus('Location permission is not available on this browser');
+                return;
+            }
+            setStatus('Fetching your location...');
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude.toFixed(6);
+                const lng = position.coords.longitude.toFixed(6);
+                const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+                const message = `Emergency! My location: ${mapsUrl}`;
+
+                if (navigator.share) {
+                    navigator.share({ title: 'Emergency Location', text: message }).then(() => {
+                        setStatus('Location shared successfully');
+                    }).catch(() => {
+                        setStatus('Share canceled');
+                    });
+                } else {
+                    navigator.clipboard.writeText(message).then(() => {
+                        setStatus('Location copied. Paste and send to contact/hospital.');
+                    }).catch(() => {
+                        setStatus(`Location: ${mapsUrl}`);
+                    });
+                }
+            }, () => {
+                setStatus('Location permission denied or unavailable');
+            });
+        }
+
+        function callEmergencyContact() {
+            const saved = JSON.parse(localStorage.getItem('careflow_emergency_profile') || '{}');
+            const phone = saved.pContactPhone || document.getElementById('pContactPhone').value.trim();
+            if (!phone) {
+                setStatus('Add emergency contact phone first');
+                return;
+            }
+            window.location.href = `tel:${phone}`;
+        }
+
+        function sendEmergencyAlert(position) {
+            const saved = JSON.parse(localStorage.getItem('careflow_emergency_profile') || '{}');
+            const incident = document.getElementById('incidentType').value || 'general emergency';
+            const payload = {
+                name: saved.pName || document.getElementById('pName').value.trim(),
+                incident,
+                lat: Number(position.coords.latitude.toFixed(6)),
+                lng: Number(position.coords.longitude.toFixed(6)),
+                contact_name: saved.pContactName || document.getElementById('pContactName').value.trim(),
+                contact_phone: saved.pContactPhone || document.getElementById('pContactPhone').value.trim()
+            };
+
+            return fetch(`${API_BASE}/api/emergency/alert`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then((res) => {
+                if (!res.ok) throw new Error('Alert failed');
+                return res.json();
+            });
+        }
+
+        function handleSos() {
+            if (!navigator.geolocation) {
+                setStatus('Location unavailable. Calling 108 directly.');
+                window.location.href = 'tel:108';
+                return;
+            }
+
+            setStatus('Sending location to nearest center...');
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                try {
+                    const data = await sendEmergencyAlert(position);
+                    const center = data.nearest_center || {};
+                    const specialist = data.recommended_specialist || 'Emergency Specialist';
+                    setStatus(`Alert sent to ${center.name || 'nearest center'} (${specialist}). Calling 108...`);
+                } catch {
+                    setStatus('Could not notify server, calling 108 now.');
+                }
+                window.location.href = 'tel:108';
+            }, () => {
+                setStatus('Could not fetch location. Calling 108 directly.');
+                window.location.href = 'tel:108';
+            }, { enableHighAccuracy: true, timeout: 7000, maximumAge: 0 });
+        }
+
+        document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+        document.getElementById('shareLocationBtn').addEventListener('click', shareLocation);
+        document.getElementById('callContactBtn').addEventListener('click', callEmergencyContact);
+        document.getElementById('sosBtn').addEventListener('click', handleSos);
+
+        loadProfile();
+        loadCenters();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>

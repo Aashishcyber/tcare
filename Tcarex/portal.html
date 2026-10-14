@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1d5ed8">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.svg" type="image/svg+xml">
+    <title>Tcarex | Premium Care</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
+        nav { background: #fff; padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 24px; font-weight: bold; color: #007bff; cursor: pointer; }
+        .container { max-width: 640px; margin: 40px auto; padding: 0 20px; }
+        .box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        h2, h3 { color: #2c3e50; margin-bottom: 20px; text-align: center; }
+        .hidden { display: none !important; }
+        label { display: block; margin-top: 15px; font-size: 0.85em; color: #666; font-weight: 600; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 2px solid #eee; }
+        button { width: 100%; padding: 14px; margin-top: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-status { background: #28a745; color: white; }
+        .back-btn { background: #6c757d; color: white; width: auto; padding: 8px 15px; font-size: 13px; }
+        .card { border: 1px solid #eee; padding: 20px; margin-top: 20px; border-radius: 12px; background: #fdfdfd; }
+        .confirmed-box { border-left: 6px solid #28a745; background: #f0fff4; }
+        .time-badge { background: #28a745; color: white; padding: 4px 10px; border-radius: 5px; font-size: 0.9em; }
+        .ai-badge { font-size: 10px; background: #e7f3ff; color: #007bff; padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
+        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .tab-btn { margin-top: 0; background: #edf4ff; color: #2454a3; }
+        .tab-btn.active { background: #007bff; color: #fff; }
+        .auth-note { margin-top: 12px; font-size: 0.85em; color: #3c4f74; text-align: center; min-height: 18px; }
+        .verify-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+        .verify-btn { background: #0c8b65; color: #fff; margin-top: 0; padding: 12px; }
+        .verify-status { margin-top: 8px; font-size: 0.83em; color: #35507e; min-height: 18px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo" onclick="window.location.href='index.html'"><i class="fa-solid fa-heart-pulse"></i> Tcarex</div>
+    <button class="btn-primary" style="width:auto;" onclick="switchView('auth')">Doctor Login/Register</button>
+</nav>
+
+<div class="container">
+    <div class="box">
+        <div id="menu">
+            <h2>Welcome to Tcarex</h2>
+            <button class="btn-primary" onclick="switchView('patient')">Patient Portal</button>
+            <button class="btn-primary" style="background:white; color:#007bff; border:2px solid #007bff;" onclick="switchView('auth')">Doctor Dashboard</button>
+        </div>
+
+        <div id="patient" class="hidden">
+            <button class="back-btn" onclick="switchView('menu')"><- Back</button>
+            <h3>Book Appointment</h3>
+            <label>Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+
+            <label>Symptoms / Disease <span class="ai-badge">AI Suggestion Active</span></label>
+            <input type="text" id="disease" placeholder="e.g. heart pain" oninput="aiSuggestDoctor(this.value)">
+
+            <label>Date</label>
+            <input type="date" id="date">
+
+            <label>Specialist (AI Selected)</label>
+            <select id="docList"></select>
+
+            <button class="btn-primary" onclick="submitRequest()">Book & Auto-Confirm (8am-5pm)</button>
+            <hr style="margin:30px 0;">
+            <h3>View Your Bookings</h3>
+            <input type="text" id="searchName" placeholder="Enter name to search">
+            <button class="btn-status" onclick="checkStatus()">Search History</button>
+            <div id="statusResult"></div>
+        </div>
+
+        <div id="auth" class="hidden">
+            <button class="back-btn" onclick="switchView('menu')"><- Back</button>
+            <h3>Doctor Access</h3>
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="loginTab" onclick="switchAuthMode('login')">Login</button>
+                <button class="tab-btn" id="registerTab" onclick="switchAuthMode('register')">Register</button>
+            </div>
+            <div id="loginForm">
+                <input type="text" id="authUser" placeholder="Username">
+                <input type="password" id="authPass" placeholder="Password">
+                <button class="btn-primary" onclick="handleAuth()">Login</button>
+            </div>
+            <div id="registerForm" class="hidden">
+                <input type="text" id="regName" placeholder="Doctor Full Name">
+                <input type="text" id="regProfession" placeholder="Profession (e.g. Cardiologist)">
+                <input type="text" id="regUser" placeholder="Choose Username">
+                <input type="password" id="regPass" placeholder="Create Password">
+                <div class="verify-row">
+                    <input type="file" id="degreeImage" accept="image/*">
+                    <button class="verify-btn" type="button" onclick="verifyDegreeImage()">Verify Degree</button>
+                </div>
+                <div class="verify-status" id="verifyStatus"></div>
+                <button class="btn-primary" onclick="handleRegister()">Register</button>
+            </div>
+            <p class="auth-note" id="authMsg"></p>
+        </div>
+
+        <div id="doctor" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 id="docWelcome">Confirmed Appointments</h3>
+                <button class="back-btn" onclick="location.reload()">Logout</button>
+            </div>
+            <div id="list"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function resolveApiBase() {
+        const qs = new URLSearchParams(window.location.search);
+        const queryBase = (qs.get('apiBase') || '').trim();
+        if (queryBase) {
+            localStorage.setItem('careflow_api_base', queryBase);
+            return queryBase.replace(/\/$/, '');
+        }
+
+        const storedBase = (localStorage.getItem('careflow_api_base') || '').trim();
+        if (storedBase) return storedBase.replace(/\/$/, '');
+
+        const host = window.location.hostname;
+        if (!host || host === 'localhost' || host === '127.0.0.1') {
+            return 'http://127.0.0.1:5000';
+        }
+        return `${window.location.protocol}//${window.location.host}`;
+    }
+
+    const API_BASE = resolveApiBase();
+    let allDoctors = [];
+    let degreeVerified = false;
+
+    const FALLBACK_DOCTORS = [
+        { name: "Dr. Khanna", specialty: "Pediatrician (Kids)", keywords: ["child", "baby", "kids"], rating: 4.9 },
+        { name: "Dr. Miller", specialty: "Cardiologist (Heart)", keywords: ["heart", "chest", "cardio"], rating: 4.8 },
+        { name: "Dr. Sarah", specialty: "Dermatologist (Skin)", keywords: ["skin", "rash", "acne"], rating: 4.7 },
+        { name: "Dr. Smith", specialty: "Neurologist (Brain)", keywords: ["brain", "neuro", "headache"], rating: 4.6 },
+        { name: "Dr. Aris", specialty: "Cardiologist (Heart)", keywords: ["heart", "chest", "cardio"], rating: 4.5 }
+    ];
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'patient') switchView('patient');
+        if (urlParams.get('mode') === 'doctor') switchView('auth');
+    };
+
+    function setAuthMsg(text, isError = false) {
+        const el = document.getElementById('authMsg');
+        el.textContent = text;
+        el.style.color = isError ? '#b42318' : '#3c4f74';
+    }
+
+    function switchAuthMode(mode) {
+        const isLogin = mode === 'login';
+        document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
+        document.getElementById('registerForm').classList.toggle('hidden', isLogin);
+        document.getElementById('loginTab').classList.toggle('active', isLogin);
+        document.getElementById('registerTab').classList.toggle('active', !isLogin);
+        degreeVerified = false;
+        document.getElementById('verifyStatus').textContent = '';
+        setAuthMsg('');
+    }
+
+    function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const result = String(reader.result || '');
+                const payload = result.includes(',') ? result.split(',')[1] : result;
+                resolve(payload);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function verifyDegreeImage() {
+        const fileInput = document.getElementById('degreeImage');
+        const status = document.getElementById('verifyStatus');
+        const file = fileInput.files && fileInput.files[0];
+        if (!file) {
+            status.textContent = 'Select degree image first.';
+            status.style.color = '#b42318';
+            degreeVerified = false;
+            return;
+        }
+
+        status.textContent = 'Running AI degree verification...';
+        status.style.color = '#35507e';
+        degreeVerified = false;
+        try {
+            const image_base64 = await fileToBase64(file);
+            const res = await fetch(`${API_BASE}/api/doctor/verify-degree`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ image_base64 })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Verification failed');
+
+            degreeVerified = Boolean(data.valid);
+            if (degreeVerified) {
+                const confidence = Math.round((Number(data.confidence || 0)) * 100);
+                status.textContent = `Degree verified (${confidence}% confidence).`;
+                status.style.color = '#087443';
+            } else {
+                const terms = (data.detected_terms || []).join(', ');
+                status.textContent = `Verification failed. Detected terms: ${terms || 'none'}.`;
+                status.style.color = '#b42318';
+            }
+        } catch (err) {
+            status.textContent = 'Verification service unavailable. Start backend and try again.';
+            status.style.color = '#b42318';
+            degreeVerified = false;
+        }
+    }
+
+    function switchView(v) {
+        ['menu', 'patient', 'auth', 'doctor'].forEach(id => document.getElementById(id).classList.add('hidden'));
+        document.getElementById(v).classList.remove('hidden');
+        if (v === 'patient') loadDoctors();
+        if (v === 'auth') switchAuthMode('login');
+    }
+
+    async function loadDoctors() {
+        try {
+            const res = await fetch(`${API_BASE}/api/doctors`);
+            if (!res.ok) throw new Error('doctor list failed');
+            allDoctors = await res.json();
+        } catch (err) {
+            allDoctors = FALLBACK_DOCTORS.slice();
+        }
+
+        if (!Array.isArray(allDoctors) || !allDoctors.length) {
+            allDoctors = FALLBACK_DOCTORS.slice();
+        }
+
+        allDoctors = allDoctors
+            .slice()
+            .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+
+        document.getElementById('docList').innerHTML = allDoctors.map(d =>
+            `<option value="${d.name}">${d.name} - ${d.specialty} (Rating ${d.rating})</option>`
+        ).join('');
+
+        const currentSymptom = document.getElementById('disease').value;
+        if (currentSymptom.trim()) aiSuggestDoctor(currentSymptom);
+    }
+
+    function aiSuggestDoctor(val) {
+        const input = (val || '').toLowerCase();
+        if (!allDoctors.length) return;
+        if (!input.trim()) {
+            document.getElementById('docList').value = allDoctors[0].name;
+            return;
+        }
+
+        const ranked = allDoctors
+            .map((doc) => {
+                const words = Array.isArray(doc.keywords) ? doc.keywords : [];
+                const score = words.reduce((count, k) => input.includes(String(k).toLowerCase()) ? count + 1 : count, 0);
+                return { doc, score };
+            })
+            .filter((item) => item.score > 0)
+            .sort((a, b) => b.score - a.score || (b.doc.rating || 0) - (a.doc.rating || 0));
+
+        if (ranked.length) {
+            document.getElementById('docList').value = ranked[0].doc.name;
+        }
+    }
+
+    async function submitRequest() {
+        const name = document.getElementById('name').value.trim();
+        const disease = document.getElementById('disease').value.trim();
+        const date = document.getElementById('date').value;
+        const doctor = document.getElementById('docList').value;
+        if (!name || !date || !doctor) return alert("Fill Name, Date and Specialist");
+
+        try {
+            const res = await fetch(`${API_BASE}/api/book`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, disease, date, doctor})
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Booking failed');
+            alert(data.message);
+            document.getElementById('searchName').value = name;
+            checkStatus();
+        } catch (err) {
+            alert('Booking failed. Please make sure the server is running.');
+        }
+    }
+
+    async function checkStatus() {
+        const name = document.getElementById('searchName').value.trim();
+        if (!name) return;
+        try {
+            const res = await fetch(`${API_BASE}/api/patient/status/${encodeURIComponent(name)}`);
+            if (!res.ok) throw new Error('Status failed');
+            const data = await res.json();
+            const display = document.getElementById('statusResult');
+            display.innerHTML = data.length ? "" : "No appointments found.";
+            data.forEach(app => {
+                display.innerHTML += `
+                    <div class="card confirmed-box">
+                        <strong>Doctor:</strong> ${app.doctor}<br>
+                        <strong>Time:</strong> <span class="time-badge">${app.time || '-'}</span><br>
+                        <small>Date: ${app.date || '-'}</small>
+                    </div>`;
+            });
+        } catch (err) {
+            document.getElementById('statusResult').innerHTML = "Unable to fetch booking history right now.";
+        }
+    }
+
+    async function handleAuth() {
+        const username = document.getElementById('authUser').value.trim();
+        const password = document.getElementById('authPass').value.trim();
+        if (!username || !password) {
+            setAuthMsg('Enter username and password.', true);
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE}/api/doctor/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setAuthMsg(data.message || 'Invalid login.', true);
+                return;
+            }
+            document.getElementById('docWelcome').innerText = `Welcome Dr. ${data.doctorName}`;
+            switchView('doctor');
+            loadConfirmedForDoc();
+        } catch (err) {
+            setAuthMsg('Unable to login. Check server connection.', true);
+        }
+    }
+
+    async function handleRegister() {
+        const name = document.getElementById('regName').value.trim();
+        const profession = document.getElementById('regProfession').value.trim();
+        const username = document.getElementById('regUser').value.trim();
+        const password = document.getElementById('regPass').value.trim();
+        if (!name || !profession || !username || !password) {
+            setAuthMsg('Enter name, profession, username and password to register.', true);
+            return;
+        }
+        if (!degreeVerified) {
+            setAuthMsg('Verify degree image first.', true);
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE}/api/doctor/register`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({name, profession, username, password, degree_verified: degreeVerified})
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setAuthMsg(data.message || 'Registration failed.', true);
+                return;
+            }
+
+            setAuthMsg('Registration complete. Please login now.');
+            document.getElementById('authUser').value = username;
+            document.getElementById('authPass').value = '';
+            document.getElementById('regName').value = '';
+            document.getElementById('regProfession').value = '';
+            document.getElementById('regUser').value = '';
+            document.getElementById('regPass').value = '';
+            document.getElementById('degreeImage').value = '';
+            document.getElementById('verifyStatus').textContent = '';
+            degreeVerified = false;
+            switchAuthMode('login');
+        } catch (err) {
+            setAuthMsg('Unable to register. Check server connection.', true);
+        }
+    }
+
+    async function loadConfirmedForDoc() {
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/requests`);
+            if (!res.ok) throw new Error('load failed');
+            const data = await res.json();
+            const div = document.getElementById('list');
+            div.innerHTML = data.map(r => `
+                <div class="card confirmed-box">
+                    <b>Patient:</b> ${r.name}<br>
+                    <b>Issue:</b> ${r.disease || '-'}<br>
+                    <b>Time:</b> ${r.time || '-'}
+                </div>
+            `).join('');
+        } catch (err) {
+            document.getElementById('list').innerHTML = '<div class="card">Unable to load appointments.</div>';
+        }
+    }
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('service-worker.js').catch(() => {});
+        });
+    }
+</script>
+</body>
+</html>

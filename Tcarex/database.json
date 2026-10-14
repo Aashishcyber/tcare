@@ -1,0 +1,180 @@
+{
+    "doctors_accounts": [
+        {
+            "username": "vishal7123",
+            "password": "007123",
+            "name": "vishal"
+        },
+        {
+            "username": "pandeyji",
+            "password": "22446688",
+            "name": "amit pandey"
+        }
+    ],
+    "pending_requests": [
+        {
+            "name": "fhfgk",
+            "disease": "chest pain",
+            "date": "2026-02-28",
+            "doctor": "Dr. Miller",
+            "id": 1
+        },
+        {
+            "name": "kllt",
+            "disease": "chest pain",
+            "date": "2026-02-24",
+            "doctor": "Dr. Miller",
+            "id": 2
+        },
+        {
+            "name": "ppp",
+            "disease": "chest pain",
+            "date": "2026-02-27",
+            "doctor": "Dr. Miller",
+            "id": 3
+        },
+        {
+            "name": "yert",
+            "disease": "skin ",
+            "date": "2026-02-27",
+            "doctor": "Dr. Sarah",
+            "id": 4
+        },
+        {
+            "name": "desk",
+            "disease": "skin ",
+            "date": "2026-02-26",
+            "doctor": "Dr. Sarah",
+            "id": 5
+        }
+    ],
+    "confirmed_appointments": [
+        {
+            "name": "ggrt",
+            "disease": "chest pain",
+            "date": "2026-02-25",
+            "doctor": "Dr. Miller",
+            "id": 6,
+            "time": "01:24 PM"
+        },
+        {
+            "name": "ser",
+            "disease": "heart",
+            "date": "2026-02-26",
+            "doctor": "Dr. Miller",
+            "id": 7,
+            "time": "02:45 PM",
+            "status": "Auto-Confirmed"
+        },
+        {
+            "name": "sunil",
+            "disease": "chest pain",
+            "date": "2026-02-21",
+            "doctor": "Dr. Miller",
+            "id": 8,
+            "time": "02:30 PM",
+            "status": "Auto-Confirmed"
+        }
+    ],
+    "doctors_list": [
+        {
+            "name": "Dr. Aris",
+            "specialty": "Cardiologist (Heart)",
+            "keywords": [
+                "heart",
+                "chest",
+                "cardio"
+            ],
+            "rating": 4.5,
+            "total_reviews": 10,
+            "fees": 700,
+            "area": "Indiranagar",
+            "distance_km": 3.2
+        },
+        {
+            "name": "Dr. Miller",
+            "specialty": "Cardiologist (Heart)",
+            "keywords": [
+                "heart",
+                "chest",
+                "cardio"
+            ],
+            "rating": 4.8,
+            "total_reviews": 5,
+            "fees": 900,
+            "area": "Koramangala",
+            "distance_km": 2.1
+        },
+        {
+            "name": "Dr. Sarah",
+            "specialty": "Dermatologist (Skin)",
+            "keywords": [
+                "skin",
+                "rash",
+                "acne"
+            ],
+            "rating": 4.7,
+            "total_reviews": 12,
+            "fees": 800,
+            "area": "HSR Layout",
+            "distance_km": 4.4
+        },
+        {
+            "name": "Dr. Gupta",
+            "specialty": "Dermatologist (Skin)",
+            "keywords": [
+                "skin",
+                "rash",
+                "acne"
+            ],
+            "rating": 4.2,
+            "total_reviews": 8,
+            "fees": 600,
+            "area": "BTM Layout",
+            "distance_km": 5.1
+        },
+        {
+            "name": "Dr. Khanna",
+            "specialty": "Pediatrician (Kids)",
+            "keywords": [
+                "child",
+                "baby",
+                "kids"
+            ],
+            "rating": 4.9,
+            "total_reviews": 20,
+            "fees": 1000,
+            "area": "Jayanagar",
+            "distance_km": 3.8
+        },
+        {
+            "name": "Dr. Smith",
+            "specialty": "Neurologist (Brain)",
+            "keywords": [
+                "brain",
+                "neuro",
+                "headache"
+            ],
+            "rating": 4.6,
+            "total_reviews": 15,
+            "fees": 1200,
+            "area": "Whitefield",
+            "distance_km": 7.9
+        },
+        {
+            "name": "Dr. Emma",
+            "specialty": "Orthopedic (Bones)",
+            "keywords": [
+                "bone",
+                "fracture",
+                "joint"
+            ],
+            "rating": 4.4,
+            "total_reviews": 7,
+            "fees": 750,
+            "area": "Marathahalli",
+            "distance_km": 6.4
+        }
+    ],
+    "emergency_alerts": []
+}
